@@ -1,0 +1,628 @@
+# Create products Talble
+mysql> create table products(
+    -> product_id int primary key auto_increment,
+    -> name varchar(100),
+    -> category varchar(100),
+    -> unit_price decimal(20,2)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> desc products;
++------------+---------------+------+-----+---------+----------------+
+| Field      | Type          | Null | Key | Default | Extra          |
++------------+---------------+------+-----+---------+----------------+
+| product_id | int           | NO   | PRI | NULL    | auto_increment |
+| name       | varchar(100)  | YES  |     | NULL    |                |
+| category   | varchar(100)  | YES  |     | NULL    |                |
+| unit_price | decimal(20,2) | YES  |     | NULL    |                |
++------------+---------------+------+-----+---------+----------------+
+4 rows in set (0.02 sec)
+
+# Create the suppliers table
+mysql> create table suppliers(
+    -> supplier_id int primary key auto_increment,
+    -> name varchar(100),
+    -> contact varchar(100)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc suppliers;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| supplier_id | int          | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(100) | YES  |     | NULL    |                |
+| contact     | varchar(100) | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+
+# create the inventory table
+mysql> create table inventory(
+    -> product_id int ,
+    -> quantity int ,
+    -> last_updated timestamp default current_timestamp,
+    -> foreign key (product_id) references products(product_id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc inventory;
++--------------+-----------+------+-----+-------------------+-------------------+
+| Field        | Type      | Null | Key | Default           | Extra             |
++--------------+-----------+------+-----+-------------------+-------------------+
+| product_id   | int       | YES  | MUL | NULL              |                   |
+| quantity     | int       | YES  |     | NULL              |                   |
+| last_updated | timestamp | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++--------------+-----------+------+-----+-------------------+-------------------+
+3 rows in set (0.00 sec)
+
+
+# create the transactions table
+mysql> create table transactions(
+    -> transaction_id int primary key auto_increment,
+    -> product_id int,
+    -> quantity int,
+    -> transaction_type enum('in','out'),
+    -> transaction_date date,
+    -> foreign key (product_id) references products(product_id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc transactions;
++------------------+------------------+------+-----+---------+----------------+
+| Field            | Type             | Null | Key | Default | Extra          |
++------------------+------------------+------+-----+---------+----------------+
+| transaction_id   | int              | NO   | PRI | NULL    | auto_increment |
+| product_id       | int              | YES  | MUL | NULL    |                |
+| quantity         | int              | YES  |     | NULL    |                |
+| transaction_type | enum('in','out') | YES  |     | NULL    |                |
+| transaction_date | date             | YES  |     | NULL    |                |
++------------------+------------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+
+#create the restock_rules
+mysql> create table restock_rules(
+    -> product_id int,
+    -> safety_stock int,
+    -> reorder_point int,
+    -> foreign key (product_id) references products(product_id)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> desc restock_rules;
++---------------+------+------+-----+---------+-------+
+| Field         | Type | Null | Key | Default | Extra |
++---------------+------+------+-----+---------+-------+
+| product_id    | int  | YES  | MUL | NULL    |       |
+| safety_stock  | int  | YES  |     | NULL    |       |
+| reorder_point | int  | YES  |     | NULL    |       |
++---------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+# Insert into products table
+mysql> insert into products(name,category,unit_price) values
+    -> ('Ball Pen','Stationery',5.00),
+    -> ('Notebook','Stationery',25.00),
+    -> ('Stapler','Office Supplies',75.00),
+    -> ('Printer Ink','Office Supplies',350.00),
+    -> ('A4 Paper Pack','Stationery',150.00),
+    -> ('Mouse','Electronics',299.00),
+    -> ('Keyboard','Electronics',599.00),
+    -> ('USB Cable','Electronics',99.00),
+    -> ('Desk Lamp','Furniture',499.00),
+    -> ('Chair','Furniture',1500.00);
+Query OK, 10 rows affected (0.02 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from products;
++------------+---------------+-----------------+------------+
+| product_id | name          | category        | unit_price |
++------------+---------------+-----------------+------------+
+|          1 | Ball Pen      | Stationery      |       5.00 |
+|          2 | Notebook      | Stationery      |      25.00 |
+|          3 | Stapler       | Office Supplies |      75.00 |
+|          4 | Printer Ink   | Office Supplies |     350.00 |
+|          5 | A4 Paper Pack | Stationery      |     150.00 |
+|          6 | Mouse         | Electronics     |     299.00 |
+|          7 | Keyboard      | Electronics     |     599.00 |
+|          8 | USB Cable     | Electronics     |      99.00 |
+|          9 | Desk Lamp     | Furniture       |     499.00 |
+|         10 | Chair         | Furniture       |    1500.00 |
++------------+---------------+-----------------+------------+
+10 rows in set (0.01 sec)
+
+
+# Insert into suppliers table
+mysql> INSERT INTO suppliers (name, contact) VALUES
+    -> ('PaperMart Inc.', 'paper@mart.com'),
+    -> ('ElectroSupply Co.', 'sales@electrosupply.com'),
+    -> ('FurniWorld', 'support@furniworld.com'),
+    -> ('Stationery Hub', 'orders@stationeryhub.com'),
+    -> ('TechZone', 'contact@techzone.com'),
+    -> ('OfficeStockers', 'hello@officestockers.com'),
+    -> ('BrightFurniture', 'info@brightfurniture.com'),
+    -> ('Daily Essentials', 'service@dailyessentials.com'),
+    -> ('MegaSuppliers', 'megacare@suppliers.com'),
+    -> ('Corporate Needs Ltd.', 'admin@corpneeds.com');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from suppliers;
++-------------+----------------------+-----------------------------+
+| supplier_id | name                 | contact                     |
++-------------+----------------------+-----------------------------+
+|           1 | PaperMart Inc.       | paper@mart.com              |
+|           2 | ElectroSupply Co.    | sales@electrosupply.com     |
+|           3 | FurniWorld           | support@furniworld.com      |
+|           4 | Stationery Hub       | orders@stationeryhub.com    |
+|           5 | TechZone             | contact@techzone.com        |
+|           6 | OfficeStockers       | hello@officestockers.com    |
+|           7 | BrightFurniture      | info@brightfurniture.com    |
+|           8 | Daily Essentials     | service@dailyessentials.com |
+|           9 | MegaSuppliers        | megacare@suppliers.com      |
+|          10 | Corporate Needs Ltd. | admin@corpneeds.com         |
++-------------+----------------------+-----------------------------+
+10 rows in set (0.00 sec)
+
+
+# Insert into inventory table
+mysql> INSERT INTO inventory (product_id, quantity) VALUES
+    -> (1, 120),
+    -> (2, 80),
+    -> (3, 40),
+    -> (4, 15),
+    -> (5, 60),
+    -> (6, 50),
+    -> (7, 30),
+    -> (8, 90),
+    -> (9, 25),
+    -> (10, 10);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from inventory;
++------------+----------+---------------------+
+| product_id | quantity | last_updated        |
++------------+----------+---------------------+
+|          1 |      120 | 2025-05-21 18:56:22 |
+|          2 |       80 | 2025-05-21 18:56:22 |
+|          3 |       40 | 2025-05-21 18:56:22 |
+|          4 |       15 | 2025-05-21 18:56:22 |
+|          5 |       60 | 2025-05-21 18:56:22 |
+|          6 |       50 | 2025-05-21 18:56:22 |
+|          7 |       30 | 2025-05-21 18:56:22 |
+|          8 |       90 | 2025-05-21 18:56:22 |
+|          9 |       25 | 2025-05-21 18:56:22 |
+|         10 |       10 | 2025-05-21 18:56:22 |
++------------+----------+---------------------+
+10 rows in set (0.00 sec)
+
+
+# Insert into transactions table
+mysql> INSERT INTO transactions (product_id, quantity, transaction_type, transaction_date) VALUES
+    -> (1, 20, 'OUT', '2025-01-02'),
+    -> (1, 100, 'IN', '2025-01-01'),
+    -> (2, 30, 'OUT', '2025-01-03'),
+    -> (3, 10, 'OUT', '2025-01-04'),
+    -> (4, 5, 'OUT', '2025-01-05'),
+    -> (5, 20, 'IN', '2025-01-02'),
+    -> (6, 10, 'OUT', '2025-01-03'),
+    -> (7, 10, 'IN', '2025-01-06'),
+    -> (8, 50, 'OUT', '2025-01-02'),
+    -> (9, 15, 'IN', '2025-01-04');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from transactions;
++----------------+------------+----------+------------------+------------------+
+| transaction_id | product_id | quantity | transaction_type | transaction_date |
++----------------+------------+----------+------------------+------------------+
+|              1 |          1 |       20 | out              | 2025-01-02       |
+|              2 |          1 |      100 | in               | 2025-01-01       |
+|              3 |          2 |       30 | out              | 2025-01-03       |
+|              4 |          3 |       10 | out              | 2025-01-04       |
+|              5 |          4 |        5 | out              | 2025-01-05       |
+|              6 |          5 |       20 | in               | 2025-01-02       |
+|              7 |          6 |       10 | out              | 2025-01-03       |
+|              8 |          7 |       10 | in               | 2025-01-06       |
+|              9 |          8 |       50 | out              | 2025-01-02       |
+|             10 |          9 |       15 | in               | 2025-01-04       |
++----------------+------------+----------+------------------+------------------+
+10 rows in set (0.00 sec)
+
+
+# Insert into restock_rules Table
+mysql> INSERT INTO restock_rules (product_id, safety_stock, reorder_point) VALUES
+    -> (1, 50, 80),
+    -> (2, 30, 60),
+    -> (3, 15, 30),
+    -> (4, 10, 20),
+    -> (5, 25, 50),
+    -> (6, 20, 40),
+    -> (7, 15, 25),
+    -> (8, 30, 70),
+    -> (9, 10, 20),
+    -> (10, 5, 15);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from restock_rules;
++------------+--------------+---------------+
+| product_id | safety_stock | reorder_point |
++------------+--------------+---------------+
+|          1 |           50 |            80 |
+|          2 |           30 |            60 |
+|          3 |           15 |            30 |
+|          4 |           10 |            20 |
+|          5 |           25 |            50 |
+|          6 |           20 |            40 |
+|          7 |           15 |            25 |
+|          8 |           30 |            70 |
+|          9 |           10 |            20 |
+|         10 |            5 |            15 |
++------------+--------------+---------------+
+10 rows in set (0.00 sec)
+
+
+✅1.Track Inventory Turnover
+--Inventory turnover=cost of goods sold/ average inventory
+mysql> select
+    -> p.name,
+    -> sum(case when t.transaction_type='out' then t.quality else 0 end) as total_sold,
+    -> avg(i.quantity)as avg_inventory
+    -> from products p
+    -> join transactions t on p. product_id=t.product_id
+    -> join inventory i on p.product_id=i.product_id
+    -> group by p.product_id;
+ERROR 1054 (42S22): Unknown column 't.quality' in 'field list'
+mysql> SELECT
+    ->   p.name,
+    ->   SUM(CASE WHEN t.transaction_type = 'OUT' THEN t.quantity ELSE 0 END) AS total_sold,
+    ->   AVG(i.quantity) AS avg_inventory
+    -> FROM products p
+    -> JOIN transactions t ON p.product_id = t.product_id
+    -> JOIN inventory i ON p.product_id = i.product_id
+    -> GROUP BY p.product_id;
++---------------+------------+---------------+
+| name          | total_sold | avg_inventory |
++---------------+------------+---------------+
+| Ball Pen      |         20 |      120.0000 |
+| Notebook      |         30 |       80.0000 |
+| Stapler       |         10 |       40.0000 |
+| Printer Ink   |          5 |       15.0000 |
+| A4 Paper Pack |          0 |       60.0000 |
+| Mouse         |         10 |       50.0000 |
+| Keyboard      |          0 |       30.0000 |
+| USB Cable     |         50 |       90.0000 |
+| Desk Lamp     |          0 |       25.0000 |
++---------------+------------+---------------+
+9 rows in set (0.01 sec)
+
+
+✅2.Detect Understock
+mysql> SELECT
+    ->   p.name,
+    ->   i.quantity,
+    ->   r.safety_stock
+    -> FROM inventory i
+    -> JOIN restock_rules r ON i.product_id = r.product_id
+    -> JOIN products p ON p.product_id = i.product_id
+    -> WHERE i.quantity < r.safety_stock;
+Empty set (0.00 sec)
+
+
+✅3.Optimize Restocking
+mysql> SELECT
+    ->   p.name,
+    ->   i.quantity,
+    ->   r.reorder_point,
+    ->   r.reorder_point - i.quantity AS reorder_quantity
+    -> FROM inventory i
+    -> JOIN restock_rules r ON i.product_id = r.product_id
+    -> JOIN products p ON p.product_id = i.product_id
+    -> WHERE i.quantity < r.reorder_point;
++-------------+----------+---------------+------------------+
+| name        | quantity | reorder_point | reorder_quantity |
++-------------+----------+---------------+------------------+
+| Printer Ink |       15 |            20 |                5 |
+| Chair       |       10 |            15 |                5 |
++-------------+----------+---------------+------------------+
+2 rows in set (0.01 sec)
+
+
+# Automate with stored Procedures/Triggers
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE CheckRestock()
+    -> BEGIN
+    ->   SELECT p.name, i.quantity, r.reorder_point
+    ->   FROM inventory i
+    ->   JOIN restock_rules r ON i.product_id = r.product_id
+    ->   JOIN products p ON p.product_id = i.product_id
+    ->   WHERE i.quantity < r.reorder_point;
+    -> END //
+Query OK, 0 rows affected (0.03 sec)
+mysql> DELIMITER ;
+
+mysql> SELECT
+    ->   p.name,
+    ->   i.quantity,
+    ->   r.reorder_point,
+    ->   r.reorder_point - i.quantity AS reorder_quantity
+    -> FROM inventory i
+    -> JOIN restock_rules r ON i.product_id = r.product_id
+    -> JOIN products p ON p.product_id = i.product_id
+    -> WHERE i.quantity < r.reorder_point;
++-------------+----------+---------------+------------------+
+| name        | quantity | reorder_point | reorder_quantity |
++-------------+----------+---------------+------------------+
+| Printer Ink |       15 |            20 |                5 |
+| Chair       |       10 |            15 |                5 |
++-------------+----------+---------------+------------------+
+2 rows in set (0.00 sec)
+
+
+# Create Reports(Using Views)
+mysql> CREATE VIEW stock_status AS
+    -> SELECT
+    ->   p.name,
+    ->   i.quantity,
+    ->   r.safety_stock,
+    ->   r.reorder_point
+    -> FROM products p
+    -> JOIN inventory i ON p.product_id = i.product_id
+    -> JOIN restock_rules r ON p.product_id = r.product_id;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from stock_status;
++---------------+----------+--------------+---------------+
+| name          | quantity | safety_stock | reorder_point |
++---------------+----------+--------------+---------------+
+| Ball Pen      |      120 |           50 |            80 |
+| Notebook      |       80 |           30 |            60 |
+| Stapler       |       40 |           15 |            30 |
+| Printer Ink   |       15 |           10 |            20 |
+| A4 Paper Pack |       60 |           25 |            50 |
+| Mouse         |       50 |           20 |            40 |
+| Keyboard      |       30 |           15 |            25 |
+| USB Cable     |       90 |           30 |            70 |
+| Desk Lamp     |       25 |           10 |            20 |
+| Chair         |       10 |            5 |            15 |
++---------------+----------+--------------+---------------+
+10 rows in set (0.00 sec)
+
+mysql> ALTER TABLE inventory ADD expiry_date DATE;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT
+    ->     p.name,
+    ->     i.quantity,
+    ->     i.expiry_date
+    -> FROM
+    ->     inventory i
+    -> JOIN products p ON i.product_id = p.product_id
+    -> WHERE
+    ->     i.expiry_date IS NOT NULL
+    ->     AND i.expiry_date <= CURDATE() + INTERVAL 7 DAY;
+Empty set (0.01 sec)
+
+
+🔹 1. Reorder Notification System
+mysql> CREATE VIEW reorder_alert_view AS
+    -> SELECT
+    ->     p.product_id,
+    ->     p.name AS product_name,
+    ->     i.quantity AS current_stock,
+    ->     r.reorder_point,
+    ->     (r.reorder_point - i.quantity) AS reorder_quantity
+    -> FROM
+    ->     inventory i
+    -> JOIN
+    ->     restock_rules r ON i.product_id = r.product_id
+    -> JOIN
+    ->     products p ON p.product_id = i.product_id
+    -> WHERE
+    ->     i.quantity < r.reorder_point;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from reorder_alert_view;
++------------+--------------+---------------+---------------+------------------+
+| product_id | product_name | current_stock | reorder_point | reorder_quantity |
++------------+--------------+---------------+---------------+------------------+
+|          4 | Printer Ink  |            15 |            20 |                5 |
+|         10 | Chair        |            10 |            15 |                5 |
++------------+--------------+---------------+---------------+------------------+
+2 rows in set (0.00 sec)
+
+
+
+🔹 2. Inventory Turnover Report
+mysql> CREATE VIEW inventory_turnover_view AS
+    -> SELECT
+    ->     p.product_id,
+    ->     p.name AS product_name,
+    ->     SUM(CASE WHEN t.transaction_type = 'OUT' THEN t.quantity ELSE 0 END) AS total_units_sold,
+    ->     AVG(i.quantity) AS avg_inventory
+    -> FROM
+    ->     products p
+    -> JOIN
+    ->     transactions t ON p.product_id = t.product_id
+    -> JOIN
+    ->     inventory i ON p.product_id = i.product_id
+    -> GROUP BY
+    ->     p.product_id, p.name;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from inventory_turnover_view
+    -> ;
++------------+---------------+------------------+---------------+
+| product_id | product_name  | total_units_sold | avg_inventory |
++------------+---------------+------------------+---------------+
+|          1 | Ball Pen      |               20 |      120.0000 |
+|          2 | Notebook      |               30 |       80.0000 |
+|          3 | Stapler       |               10 |       40.0000 |
+|          4 | Printer Ink   |                5 |       15.0000 |
+|          5 | A4 Paper Pack |                0 |       60.0000 |
+|          6 | Mouse         |               10 |       50.0000 |
+|          7 | Keyboard      |                0 |       30.0000 |
+|          8 | USB Cable     |               50 |       90.0000 |
+|          9 | Desk Lamp     |                0 |       25.0000 |
++------------+---------------+------------------+---------------+
+9 rows in set (0.01 sec)
+
+
+🔹 3. Expiring Products or Stock Aging
+mysql> ALTER TABLE inventory ADD COLUMN last_restocked_date DATE;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-05' WHERE product_id = 1;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-02' WHERE product_id = 2;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2024-12-28' WHERE product_id = 3;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2024-11-30' WHERE product_id = 4;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-10' WHERE product_id = 5;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-07' WHERE product_id = 6;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-01' WHERE product_id = 7;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2024-12-15' WHERE product_id = 8;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2024-10-20' WHERE product_id = 9;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE inventory SET last_restocked_date = '2025-01-08' WHERE product_id = 10;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT product_id, quantity, last_restocked_date
+    -> FROM inventory
+    -> ORDER BY last_restocked_date DESC;
++------------+----------+---------------------+
+| product_id | quantity | last_restocked_date |
++------------+----------+---------------------+
+|          5 |       60 | 2025-01-10          |
+|         10 |       10 | 2025-01-08          |
+|          6 |       50 | 2025-01-07          |
+|          1 |      120 | 2025-01-05          |
+|          2 |       80 | 2025-01-02          |
+|          7 |       30 | 2025-01-01          |
+|          3 |       40 | 2024-12-28          |
+|          8 |       90 | 2024-12-15          |
+|          4 |       15 | 2024-11-30          |
+|          9 |       25 | 2024-10-20          |
++------------+----------+---------------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT
+    ->     p.name,
+    ->     i.quantity,
+    ->     i.last_restocked_date,
+    ->     DATEDIFF(CURDATE(), i.last_restocked_date) AS days_since_restock
+    -> FROM
+    ->     inventory i
+    -> JOIN
+    ->     products p ON p.product_id = i.product_id
+    -> WHERE
+    ->     DATEDIFF(CURDATE(), i.last_restocked_date) > 60;
++---------------+----------+---------------------+--------------------+
+| name          | quantity | last_restocked_date | days_since_restock |
++---------------+----------+---------------------+--------------------+
+| Ball Pen      |      120 | 2025-01-05          |                136 |
+| Notebook      |       80 | 2025-01-02          |                139 |
+| Stapler       |       40 | 2024-12-28          |                144 |
+| Printer Ink   |       15 | 2024-11-30          |                172 |
+| A4 Paper Pack |       60 | 2025-01-10          |                131 |
+| Mouse         |       50 | 2025-01-07          |                134 |
+| Keyboard      |       30 | 2025-01-01          |                140 |
+| USB Cable     |       90 | 2024-12-15          |                157 |
+| Desk Lamp     |       25 | 2024-10-20          |                213 |
+| Chair         |       10 | 2025-01-08          |                133 |
++---------------+----------+---------------------+--------------------+
+10 rows in set (0.01 sec)
+
+
+
+🔹 4. Supplier-Product Relationships
+mysql> CREATE TABLE product_suppliers (
+    ->     product_id INT,
+    ->     supplier_id INT,
+    ->     PRIMARY KEY (product_id, supplier_id),
+    ->     FOREIGN KEY (product_id) REFERENCES products(product_id),
+    ->     FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> INSERT INTO product_suppliers (product_id, supplier_id) VALUES
+    -> (1, 1), (2, 1), (3, 6), (4, 2), (5, 1),
+    -> (6, 2), (7, 2), (8, 2), (9, 3), (10, 3);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT
+    ->     p.name AS product_name,
+    ->     s.name AS supplier_name
+    -> FROM
+    ->     product_suppliers ps
+    -> JOIN
+    ->     products p ON ps.product_id = p.product_id
+    -> JOIN
+    ->     suppliers s ON ps.supplier_id = s.supplier_id;
++---------------+-------------------+
+| product_name  | supplier_name     |
++---------------+-------------------+
+| Ball Pen      | PaperMart Inc.    |
+| Notebook      | PaperMart Inc.    |
+| A4 Paper Pack | PaperMart Inc.    |
+| Printer Ink   | ElectroSupply Co. |
+| Mouse         | ElectroSupply Co. |
+| Keyboard      | ElectroSupply Co. |
+| USB Cable     | ElectroSupply Co. |
+| Desk Lamp     | FurniWorld        |
+| Chair         | FurniWorld        |
+| Stapler       | OfficeStockers    |
++---------------+-------------------+
+10 rows in set (0.01 sec)
+
+
+🔹 5. Monthly Transaction Summary
+mysql> SELECT
+    ->     DATE_FORMAT(transaction_date, '%Y-%m') AS month,
+    ->     transaction_type,
+    ->     SUM(quantity) AS total_quantity
+    -> FROM
+    ->     transactions
+    -> GROUP BY
+    ->     month, transaction_type
+    -> ORDER BY
+    ->     month;
++---------+------------------+----------------+
+| month   | transaction_type | total_quantity |
++---------+------------------+----------------+
+| 2025-01 | in               |            145 |
+| 2025-01 | out              |            125 |
++---------+------------------+----------------+
+2 rows in set (0.00 sec)
