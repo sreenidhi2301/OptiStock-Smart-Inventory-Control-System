@@ -1,69 +1,75 @@
 # OptiStock-Smart-Inventory-Control-System
 A SQL-based inventory control solution built to intelligently manage stock, reduce understock/overstock issues, and enhance operational efficiency for businesses.
 
+# 🚀 OptiStock – Smart Inventory Control System
 
-🚀 Project Overview
-OptiStock is a smart inventory control system designed using MySQL that helps businesses efficiently monitor stock levels, avoid shortages, and optimize restocking. This project addresses common inventory challenges by integrating safety stock control, reorder rules, transaction tracking, and inventory turnover analysis — all using structured SQL queries, views, and relational tables.
+**OptiStock** is a SQL-based smart inventory control system built on **MySQL**, designed to help businesses efficiently monitor stock levels, avoid shortages, and optimize restocking.  
 
-📌 Features
-✅ Track Inventory in Real-Time
-Monitor current stock levels for each product across multiple categories.
-✅ Understock Detection
-Automatically identifies products whose stock is below the defined safety level.
-✅ Smart Reordering Alerts
-Generates alerts when stock drops below the reorder point, with suggested reorder quantity.
-✅ Inventory Turnover Insights
-Measure how efficiently inventory is being sold or used over time.
-✅ Supplier Mapping
-Link suppliers to specific products for easy reorder reference.
-✅ Aged Stock Reports
-Identify products that haven’t been restocked for a long time (dead stock detection).
-✅ Monthly Transaction Summary
-Summarizes IN/OUT stock movement per month for trend analysis.
+This project tackles common inventory management challenges by integrating **safety stock control, reorder rules, transaction tracking, and turnover analysis** — all implemented with **structured SQL queries, views, and relational tables**.
 
-🧱 Database Schema
-The project includes the following normalized relational tables:
+---
 
-Table Name	Description
-products	Product catalog with name, category, price
-inventory	Tracks current quantity and restock date
-transactions	Records stock IN/OUT movements
-restock_rules	Holds safety stock and reorder thresholds
-suppliers	Supplier directory
-product_suppliers	Links products to suppliers (many-to-many)
+## 📌 Features
 
-💾 Sample Data
-10+ products across different categories
-Mapped suppliers with valid contact info
-Sample transactions (IN and OUT)
-Restock rules for each product
-Realistic last restocked dates
+- ✅ **Real-Time Stock Tracking** – Monitor stock levels for each product across multiple categories.  
+- ✅ **Understock Detection** – Identify products falling below the defined safety threshold.  
+- ✅ **Smart Reordering Alerts** – Get reorder alerts with suggested quantities when stock dips below the reorder point.  
+- ✅ **Inventory Turnover Insights** – Track how efficiently inventory is being sold/used over time.  
+- ✅ **Supplier Mapping** – Link suppliers to products for quick and reliable restocking.  
+- ✅ **Aged Stock Reports** – Detect slow-moving or dead stock not restocked for 60+ days.  
+- ✅ **Monthly Transaction Summary** – Analyze IN/OUT stock movements per month for demand trends.  
 
-🔍 Key Views & Reports
-understock_view
-Shows products currently below safety stock.
-reorder_alert_view
-Lists products below reorder point with suggested reorder quantity.
-inventory_turnover_view
-Provides inventory usage and efficiency over time.
-aged_inventory_report
-Shows products not restocked in over 60 days.
+---
 
-💡 Technologies Used
-🛢️ MySQL – Core database engine
-✍️ SQL – Queries, views, reports
-🗃️ Relational Schema Design – Normalized, scalable
+## 🧱 Database Schema
 
-📈 Future Enhancements
-📦 Add batch/expiry tracking for perishable items
-🖥️ Create a web dashboard using PHP/Flask/Node.js
-📧 Email/SMS alerts for low stock
+The project includes normalized relational tables:
 
-📊 Visual inventory charts using Power BI or Python
-📁 Folder Structure
-📦 OptiStock-SQL
- ┣ 📂 scripts
- ┃ ┣ 📄 create_tables.sql
- ┃ ┣ 📄 insert_data.sql
- ┃ ┣ 📄 views.sql
- ┣ 📄 README.md
+| Table Name         | Description                                      |
+|--------------------|--------------------------------------------------|
+| `products`         | Product catalog (name, category, price)          |
+| `inventory`        | Tracks current quantity & last restock date      |
+| `transactions`     | Records stock IN/OUT movements                   |
+| `restock_rules`    | Safety stock & reorder thresholds                |
+| `suppliers`        | Supplier details (name, contact info)            |
+| `product_suppliers`| Many-to-many mapping between products & suppliers |
+
+---
+
+## 💾 Sample Data
+
+- 10+ products across multiple categories  
+- Suppliers with contact details  
+- Stock IN/OUT transactions for realistic flow  
+- Restock rules for each product  
+- Simulated aged stock (not restocked for 60+ days)  
+
+---
+
+## 🔍 Key Views & Reports
+
+- 📉 **`understock_view`** → Products below safety stock  
+- 🔔 **`reorder_alert_view`** → Products needing reorder with suggested quantity  
+- 📊 **`inventory_turnover_view`** → Stock usage & efficiency metrics  
+- 🕒 **`aged_inventory_report`** → Products not restocked in 60+ days  
+
+---
+
+## 💡 Technologies Used
+
+- 🛢️ **MySQL** – Database engine  
+- ✍️ **SQL** – Queries, views, reports  
+- 🗃️ **Relational Schema Design** – Normalized & scalable  
+
+---
+
+## 📈 Future Enhancements
+
+- 📦 Batch/expiry tracking for perishable items  
+- 🖥️ Web dashboard using PHP / Flask / Node.js  
+- 📧 Automated email/SMS alerts for low stock  
+- 📊 Power BI / Python dashboards for visual insights  
+
+---
+
+
